@@ -1,6 +1,7 @@
 import { Router } from "express";
 import productsController from "../controllers/products.controller.js";
 import { authorization, passportCall } from "../middlewares/passport.middleware.js";
+import { generateProductsMocks } from "../mocks/product.mock.js";
 
 const router = Router();
 

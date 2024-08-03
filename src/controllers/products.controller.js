@@ -1,3 +1,4 @@
+import { generateProductsMocks } from "../mocks/product.mock.js";
 import productsServices from "../services/products.services.js";
 
 const getAll = async (req, res) => {

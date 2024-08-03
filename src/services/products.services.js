@@ -27,6 +27,7 @@ const deleteOne = async (id) => {
   return product;
 }
 
+
 export default {
   getAll,
   getById,
