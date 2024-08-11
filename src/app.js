@@ -12,6 +12,7 @@ import passport from 'passport';
 import initializePassport from './config/passport.config.js';
 import env from "./config/env.config.js";
 import { errorHandler } from './errors/errorHandler.js';
+import { logger } from "./utils/logger.js";
 
 const app = express();
 
@@ -43,4 +44,5 @@ app.use(errorHandler);
 
 app.listen(env.PORT, ()=>{
     console.log(`Servidor levantado en http://localhost:${env.PORT}`);
+    logger.log("info", `Servidor levantado en http://localhost:${env.PORT}`);
 });
