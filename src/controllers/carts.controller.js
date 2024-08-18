@@ -11,15 +11,16 @@ const createCart = async (req, res) => {
   }
 };
 
-const addProductToCart = async (req, res) => {
+const addProductToCart = async (req, res, next) => {
   try {
     const { cid, pid } = req.params;
-    const cart = await cartsServices.addProductToCart(cid, pid);
+    const cart = await cartsServices.addProductToCart(cid, pid, req.user);
 
     res.status(200).json({ status: "success", payload: cart });
   } catch (error) {
     console.log(error);
     res.status(500).json({ status: "Error", msg: "Error interno del servidor" });
+    next(error);
   }
 };
 

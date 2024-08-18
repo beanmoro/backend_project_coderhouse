@@ -1,5 +1,6 @@
 import { request, response } from "express";
 import passport from "passport";
+import customErrors from "../errors/customErrors.js";
 
 export const passportCall = (strategy) =>{
     return async (req = request, res = response, next)=>{
@@ -14,11 +15,14 @@ export const passportCall = (strategy) =>{
     };
 };
 
-export const authorization = (role)=>{
+export const authorization = (roles)=>{
     return async(req = request, res = response, next)=>{
-        if(!req.user) return res.status(401).json({status: "error", msg: "No autorizado"});
-        if(req.user.role !== role) return res.status(403).json({statys: "error", msg: "No tienes permiso"});
-
-        next();
+        try {
+            if(!req.user) throw customErrors.notFoundError("User not found");
+            const roleAuthorized = roles.includes(req.user.role);
+            if(!roleAuthorized) throw customErrors.unauthorizedError("User not authorized!");
+        } catch (error) {
+            next(error);
+        }
     }
 }

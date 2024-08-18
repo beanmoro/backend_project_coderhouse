@@ -49,7 +49,7 @@ const getById = async (req, res) => {
 const create = async (req, res) => {
   try {
     const product = req.body;
-    const newProduct = await productsServices.create(product);
+    const newProduct = await productsServices.create(product, req.user);
 
     res.status(201).json({ status: "success", payload: newProduct });
   } catch (error) {
@@ -63,7 +63,7 @@ const update = async (req, res) => {
     const { pid } = req.params;
     const productData = req.body;
 
-    const updateProduct = await productsServices.update(pid, productData);
+    const updateProduct = await productsServices.update(pid, productData, req.user);
     if (!updateProduct) return res.status(404).json({ status: "Error", msg: `Producto con el id ${pid} no encontrado` });
 
     res.status(200).json({ status: "success", payload: updateProduct });
@@ -73,16 +73,17 @@ const update = async (req, res) => {
   }
 };
 
-const deleteOne = async (req, res) => {
+const deleteOne = async (req, res, next) => {
   try {
     const { pid } = req.params;
-    const product = await productsServices.deleteOne(pid);
+    const product = await productsServices.deleteOne(pid, req.user);
     if (!product) return res.status(404).json({ status: "Error", msg: `Producto con el id ${pid} no encontrado` });
 
     res.status(200).json({ status: "success", payload: "Producto eliminado" });
   } catch (error) {
     console.log(error);
     res.status(500).json({ status: "Error", msg: "Error interno del servidor" });
+    next(error);
   }
 };
 

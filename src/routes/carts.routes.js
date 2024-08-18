@@ -7,16 +7,16 @@ const router = Router();
 
 router.post('/', passportCall("jwt"), authorization("admin"), cartsController.createCart);
 
-router.post('/:cid/product/:pid',passportCall("jwt"), authorization("user"), checkProductAndcart,  cartsController.addProductToCart)
+router.post('/:cid/product/:pid',passportCall("jwt"), authorization(["user","premium"]), checkProductAndcart,  cartsController.addProductToCart)
 
-router.put("/:cid/product/:pid",passportCall("jwt"), authorization("user"), checkProductAndcart,  cartsController.updateQuantityProductInCart);
+router.put("/:cid/product/:pid",passportCall("jwt"), authorization(["user","premium"]), checkProductAndcart,  cartsController.updateQuantityProductInCart);
 
-router.delete("/:cid/product/:pid",passportCall("jwt"), authorization("user"), checkProductAndcart,  cartsController.deleteProductInCart);
+router.delete("/:cid/product/:pid",passportCall("jwt"), authorization(["user","premium"]), checkProductAndcart,  cartsController.deleteProductInCart);
 
-router.get('/:cid',passportCall("jwt"), authorization("user"), checkProductAndcart, cartsController.getCartById);
+router.get('/:cid',passportCall("jwt"), authorization(["user","premium"]), checkProductAndcart, cartsController.getCartById);
 
-router.delete("/:cid",passportCall("jwt"), authorization("user"),  cartsController.deleteAllProductsInCart);
+router.delete("/:cid",passportCall("jwt"), authorization(["user","premium"]),  cartsController.deleteAllProductsInCart);
 
-router.get("/:cid/purchase", passportCall("jwt"), authorization("user"), cartsController.purchaseCart);
+router.get("/:cid/purchase", passportCall("jwt"), authorization(["user","premium"]), cartsController.purchaseCart);
 
 export default router;
