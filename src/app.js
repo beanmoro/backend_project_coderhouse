@@ -12,6 +12,8 @@ import cookieParser from "cookie-parser";
 import passport from 'passport';
 import initializePassport from './config/passport.config.js';
 import env from "./config/env.config.js";
+import swaggerUiExpress from 'swagger-ui-express';
+import { specs } from './config/swagger.config.js';
 import { errorHandler } from './errors/errorHandler.js';
 import { logger } from "./utils/logger.js";
 
@@ -35,7 +37,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 initializePassport();
 
-
+app.use('/api-docs', swaggerUiExpress.serve, swaggerUiExpress.setup(specs));
 app.use('/api/other', otherRouter );
 app.use('/api/products', isLogin,  productsRouter);
 app.use('/api/carts', cartsRouter);
