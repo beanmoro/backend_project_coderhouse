@@ -8,7 +8,7 @@ router.post("/register", passport.authenticate("register"), sessionController.us
 
 router.post('/login', passport.authenticate("login"), sessionController.userLogin);
 
-router.get("/current", passport.authenticate("jwt"), sessionController.userCheckToken);
+router.get("/current", passport.authenticate("jwt"), sessionController.current);
 
 router.get("/auth/github", passport.authenticate('github'), sessionController.userGithubLogin)
 

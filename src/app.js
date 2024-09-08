@@ -12,6 +12,7 @@ import cookieParser from "cookie-parser";
 import passport from 'passport';
 import initializePassport from './config/passport.config.js';
 import env from "./config/env.config.js";
+import cors from "cors";
 import swaggerUiExpress from 'swagger-ui-express';
 import { specs } from './config/swagger.config.js';
 import { errorHandler } from './errors/errorHandler.js';
@@ -22,20 +23,22 @@ const app = express();
 connectDB();
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
-app.use(cookieParser());
+app.use(cookieParser(env.SECRET_CODE));
 app.use(
     session({
         store: MongoStore.create({
             mongoUrl: env.MONGO_URL,
-            ttl: 15
+            ttl: 15 * 60,
         }),
         secret: env.SECRET_CODE,
-        resave: true
+        resave: true,
+        saveUninitialized: true,
     })
 );
 app.use(passport.initialize());
 app.use(passport.session());
 initializePassport();
+app.use(cors());
 
 app.use('/api-docs', swaggerUiExpress.serve, swaggerUiExpress.setup(specs));
 app.use('/api/other', otherRouter );

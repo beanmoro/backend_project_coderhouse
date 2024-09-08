@@ -1,4 +1,6 @@
-import { verifyToken } from '../utils/jwt.js';
+import { createToken, verifyToken } from '../utils/jwt.js';
+import { userResponseDto} from "../dto/user-response.dto.js";
+
 
 
 const userRegister = async(req, res) => {
@@ -25,7 +27,8 @@ const userLogin = async(req, res) => {
 
 const current = (req, res) => {
     try {
-        return res.status(200).json({ status: "success", payload: req.user });
+        const user = userResponseDto(req.user);
+        return res.status(200).json({ status: "success", payload: user });
     } catch (error) {
         console.log(error);
         res.status(500).json({ status: "Error", msg: "Internal Server Error" });

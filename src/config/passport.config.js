@@ -2,6 +2,7 @@ import passport from "passport";
 import local from "passport-local";
 import github from "passport-github";
 import jwt from "passport-jwt";
+import envConfig from "./env.config.js";
 import { createHash, isValidPassword } from "../utils/hashPassword.js";
 import { cookieExtractor } from "../utils/cookieExtractor.js";
 import userRepository from "../persistences/mongo/repositories/user.repository.js";
@@ -60,25 +61,6 @@ const initializePassport = () => {
       })  
     );
 
-
-    passport.use(
-        "jwt",
-        new JWTStrategy(
-            {
-                jwtFromRequest: ExtractJWT.fromExtractors([cookieExtractor]),
-                secretOrKey: "codigoSecreto",
-            },
-            async (jwt_payload, done) =>{
-                try {
-                    return done(null, jwt_payload);
-                } catch (error) {
-                    return done(error);
-                }
-            }
-        )
-    )
-
-
     passport.use(
         "github",
         new GithubStrategy(
@@ -110,6 +92,24 @@ const initializePassport = () => {
                     return cb(error);
                 }
 
+            }
+        )
+    );
+
+
+    passport.use(
+        "jwt",
+        new JWTStrategy(
+            {
+                jwtFromRequest: ExtractJWT.fromExtractors([cookieExtractor]),
+                secretOrKey: envConfig.SECRET_CODE,
+            },
+            async (jwt_payload, done) =>{
+                try {
+                    return done(null, jwt_payload);
+                } catch (error) {
+                    return done(error);
+                }
             }
         )
     );
