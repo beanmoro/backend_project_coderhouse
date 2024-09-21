@@ -4,14 +4,6 @@ import userRepository from "../persistences/mongo/repositories/user.repository.j
 import { isValidPassword} from "../utils/hashPassword.js"
 import { sendMail } from "../utils/sendMail.js";
 
-/* const registerUser = async(userData) => {
-    return await userDao.create(userData);
-};
-
-const getOnUser = async(query) => {
-    return await userDao.getOne(query);
-}; */
-
 const sendEmailResetPassword = async(email)=>{
     const message = "Debe restablecer su password en el siguiente link ...";
     await sendMail(email, "Restablecer password", message);
@@ -32,8 +24,24 @@ const resetPassword = async(email, password)=>{
 const changeUserRole = async(uid) => {
     const user = await userRepository.getById(uid);
     if(!user) throw customErrors.notFoundError("User not found");
+
+    if(user.role === "user" && user.document.length > 3) throw customErrors.badRequestError("You must all required documentation");
+
     const userRole = user.role === "premium" ? "user" : "premium";
     return await userRepository.update(uid, { role: userRole});
 }
 
-export default { /*registerUser, getOnUser,*/ sendEmailResetPassword, resetPassword, changeUserRole};
+const addDocuments = async(uid, reqFiles) => {
+    const files = reqFiles.document;
+    const userDocuments = files.map((file) => {
+        return {
+            name: file.filename,
+            reference: file.path,
+        };
+    });
+
+    const user = await userRepository.update(uid, {document: userDocuments});
+
+    return user;
+};
+export default { sendEmailResetPassword, resetPassword, changeUserRole, addDocuments};
