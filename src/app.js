@@ -7,6 +7,7 @@ import cartsRouter from './routes/carts.routes.js';
 import sessionRouter from './routes/session.routes.js';
 import otherRouter from './routes/other.routes.js';
 import userRouter from './routes/user.routes.js';
+import usersRouter from './routes/users.routes.js';
 import { isLogin } from './middlewares/isLogin.middleware.js';
 import cookieParser from "cookie-parser";
 import passport from 'passport';
@@ -46,6 +47,7 @@ app.use('/api/products', isLogin,  productsRouter);
 app.use('/api/carts', cartsRouter);
 app.use('/api/session', sessionRouter);
 app.use('/api/user', userRouter);
+app.use('/api/users', usersRouter);
 
 app.use(errorHandler);
 

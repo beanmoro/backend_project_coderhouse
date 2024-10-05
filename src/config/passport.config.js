@@ -6,6 +6,7 @@ import envConfig from "./env.config.js";
 import { createHash, isValidPassword } from "../utils/hashPassword.js";
 import { cookieExtractor } from "../utils/cookieExtractor.js";
 import userRepository from "../persistences/mongo/repositories/user.repository.js";
+import cartsRepository from "../persistences/mongo/repositories/carts.repository.js";
 
 const LocalStrategy = local.Strategy;
 const JWTStrategy = jwt.Strategy;
@@ -20,10 +21,12 @@ const initializePassport = () => {
             { passReqToCallback: true, usernameField: "email"},
             async (req, username, password, done) =>{
                 try {
-                    const {first_name, last_name, email, age } = req.body;
+                    const {first_name, last_name, email, age, role } = req.body;
                     const user = await userRepository.getByEmail(username);
                     if(user)
                         return done(null, false, { message: "El usuario ya existe!"});
+
+                    const cart = await cartsRepository.create();
     
                     const newUser = {
                         first_name,
@@ -31,6 +34,8 @@ const initializePassport = () => {
                         email,
                         age,
                         password: createHash(password),
+                        role,
+                        cart: cart._id
                     };
     
                     const createUser = await userRepository.create(newUser);
@@ -52,7 +57,7 @@ const initializePassport = () => {
             if(!user || !isValidPassword(user, password)){
                 return done(null, false, {message: "Email o password ingresado es invalido!"});
             }
-
+            
             return done(null, user);
 
         } catch (error) {

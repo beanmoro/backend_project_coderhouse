@@ -1,4 +1,5 @@
 import { createToken, verifyToken } from '../utils/jwt.js';
+import userServices from "../services/user.services.js";
 import { userResponseDto} from "../dto/user-response.dto.js";
 
 
@@ -18,6 +19,7 @@ const userLogin = async(req, res) => {
         const token = createToken(user);
         res.cookie("token", token, { httpOnly: true });
         const userDto = userResponseDto(user);
+        await userServices.updateLastConnection(req.user.email);
         return res.status(200).json({ status: "success", payload: userDto, token });
       } catch (error) {
         console.log(error);
@@ -59,6 +61,7 @@ const userGithubLogin = async(req, res) => {
 
 const userLogout = async(req, res) => {
     try {
+        await userServices.updateLastConnection(req.user.email);
         req.session.destroy();
         res.status(200).json({ status: "success", msg: "Sesión cerrada con éxito" });
     } catch (error) {

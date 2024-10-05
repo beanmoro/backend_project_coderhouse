@@ -1,45 +1,53 @@
 import { userModel } from "../models/user.model.js";
 
 const getAll = async () => {
-    const users = await userModel.find();
-    return users;
-}
-
-const getById = async(id) => {
-    const user = await userModel.findById(id);
-    return user;
-}
-
-const getByEmail = async (email) => {
-    const user = await userModel.findOne({email});
-    return user;
-}
-
-const create = async(data)=>{
-    const user = await userModel.create(data);
-    return user;
+  const users = await userModel.find();
+  return users;
 };
 
-const update = async(id, data) => {
-    await userModel.findById(id, data);
-    const user = await userModel.findById(id);
-    return user;
-}
+const getById = async (id) => {
+  const user = await userModel.findById(id);
+  return user;
+};
 
-const deleteOne = async(id) => {
-    const user = await userModel.deleteOne({_id: id});
-    if(user.deletedCount === 0){
-        return false;
-    }
-    return true;
+const getByEmail = async (email) => {
+  const user = await userModel.findOne({ email });
+  return user;
+};
+
+const create = async (data) => {
+  const user = await userModel.create(data);
+  return user;
+};
+
+const update = async (id, data) => {
+  const user = await userModel.findByIdAndUpdate(id, data, { new: true });
+  return user;
+};
+
+const deleteOne = async (id) => {
+  const user = await userModel.deleteOne({ _id: id });
+  if (user.deletedCount === 0) {
+    return false;
+  }
+  return true;
+};
+
+const deleteMany = async (ids) => {
+  try {
+    const users = await userModel.deleteMany({ _id: { $in: ids } });
+    return users;
+  } catch (error) {
+    throw error;
+  }
 };
 
 export default {
-    getAll,
-    getById,
-    create,
-    update,
-    deleteOne,
-    getByEmail
-}
-
+  getAll,
+  getById,
+  create,
+  update,
+  deleteOne,
+  getByEmail,
+  deleteMany,
+};
